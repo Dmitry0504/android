@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">MyWeather</string>
+    <string name="app_name">Погодв</string>
+    <string name="city">city</string>
+    <string name="temperature">temperature</string>
 </resources>
