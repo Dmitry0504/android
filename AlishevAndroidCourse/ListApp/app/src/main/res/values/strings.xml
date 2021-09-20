@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">ListApp</string>
+    <string name="list">The list will be here</string>
+</resources>
