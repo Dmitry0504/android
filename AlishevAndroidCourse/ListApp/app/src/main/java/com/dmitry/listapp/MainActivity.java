@@ -15,7 +15,8 @@ public class MainActivity extends AppCompatActivity {
 
         plList = findViewById(R.id.tv_pl_list);
 
-        String[] names = {"Java", "Python", "JavaScript", "C++"};
+        String[] names = {"Java", "Python", "JavaScript", "C++", "C", "C#",
+                "Swift", "Go", "Lisp", "Rust", "Dart", "Ruby"};
 
         plList.setText("");
         for(String s: names) {
