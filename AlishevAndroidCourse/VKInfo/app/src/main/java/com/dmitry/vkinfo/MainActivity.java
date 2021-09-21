@@ -8,6 +8,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.dmitry.vkinfo.utils.NetworkUtils;
+
+import java.net.URL;
+
 public class MainActivity extends AppCompatActivity {
     private Button b_search;
     private EditText ed_search_field;
@@ -29,7 +33,8 @@ public class MainActivity extends AppCompatActivity {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                tv_result.setText("Кнопка была нажата");
+                URL generatedURL = NetworkUtils.generateURL(ed_search_field.getText().toString());
+                tv_result.setText(generatedURL.toString());
             }
         };
     }
