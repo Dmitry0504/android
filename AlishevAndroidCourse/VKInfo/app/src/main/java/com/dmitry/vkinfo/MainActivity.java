@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.dmitry.vkinfo.utils.NetworkUtils;
 
+import java.io.IOException;
 import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
@@ -34,7 +35,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 URL generatedURL = NetworkUtils.generateURL(ed_search_field.getText().toString());
-                tv_result.setText(generatedURL.toString());
+
+                String response = null;
+                try {
+                    response = NetworkUtils.getResponseFromURL(generatedURL);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                tv_result.setText(response);
             }
         };
     }
