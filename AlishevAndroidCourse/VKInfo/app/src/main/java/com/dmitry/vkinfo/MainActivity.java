@@ -2,6 +2,7 @@ package com.dmitry.vkinfo;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -17,6 +18,27 @@ public class MainActivity extends AppCompatActivity {
     private Button b_search;
     private EditText ed_search_field;
     private TextView tv_result;
+
+    class VKQueryTask extends AsyncTask<URL, Void, String> {
+
+        @Override
+        protected String doInBackground(URL... urls) {
+            String response = null;
+
+            try {
+                response = NetworkUtils.getResponseFromURL(urls[0]);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return response;
+        }
+
+        @Override
+        protected void onPostExecute(String response) {
+            tv_result.setText(response);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,15 +57,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 URL generatedURL = NetworkUtils.generateURL(ed_search_field.getText().toString());
-
-                String response = null;
-                try {
-                    response = NetworkUtils.getResponseFromURL(generatedURL);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                tv_result.setText(response);
+                new VKQueryTask().execute(generatedURL);
             }
         };
     }
