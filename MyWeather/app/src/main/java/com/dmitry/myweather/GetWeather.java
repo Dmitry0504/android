@@ -1,47 +1,67 @@
 package com.dmitry.myweather;
 
 import android.content.Context;
+import android.net.Uri;
 
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.UnknownHostException;
+import java.util.Scanner;
 
 public class GetWeather {
-    private static final String OPEN_WEATHER_MAP_API =
-            "api.openweathermap.org/data/2.5/weather?id=%s&units=metric&appid=%s";
+    private static final String BASE_URL = "api.openweathermap.org/data/2.5/weather";
+//    private static final String OPEN_WEATHER_MAP_API =
+//            "api.openweathermap.org/data/2.5/weather?id=%s&units=metric&appid=148803225b4a79454fcb9fc8664fc151";
+    private static final String CITY_ID_PARAM = "id";
+    private static final String APPID = "appid";
+    private static final String TOKEN = "148803225b4a79454fcb9fc8664fc151";
 
-    public static JSONObject getJSON(Context context, String city){
+    public static URL generateURL(String cityID) {
+        Uri builtUri = Uri.parse(BASE_URL)
+                .buildUpon()
+                .appendQueryParameter(CITY_ID_PARAM, cityID)
+                .appendQueryParameter("units", "metric")
+                .appendQueryParameter(APPID, TOKEN)
+                .build();
+
+        URL url = null;
         try {
-            URL url = new URL(String.format(OPEN_WEATHER_MAP_API, city, "148803225b4a79454fcb9fc8664fc151"));
-            HttpURLConnection connection =
-                    (HttpURLConnection)url.openConnection();
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
 
-//            connection.addRequestProperty("x-api-key",
-//                    context.getString(R.string.open_weather_maps_app_id));
+        return url;
+    }
 
-            BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(connection.getInputStream()));
+    public static String getResponseFromURL(URL url) throws IOException {
+        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 
-            StringBuffer json = new StringBuffer(1024);
-            String tmp="";
-            while((tmp=reader.readLine())!=null)
-                json.append(tmp).append("\n");
-            reader.close();
+        try {
+            InputStream inputStream = urlConnection.getInputStream();
 
-            JSONObject data = new JSONObject(json.toString());
+            Scanner scanner = new Scanner(inputStream);
+            scanner.useDelimiter("\\A");
 
-            // This value will be 404 if the request was not
-            // successful
-            if(data.getInt("cod") != 200){
+            boolean hasInput = scanner.hasNext();
+
+            if(hasInput)
+                return scanner.next();
+            else
                 return null;
-            }
-
-            return data;
-        }catch(Exception e){
+        } catch (UnknownHostException e) {
             return null;
         }
+        finally {
+            urlConnection.disconnect();
+        }
     }
+
 }
