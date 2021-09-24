@@ -24,20 +24,14 @@ public class GetWeather {
     private static final String TOKEN = "148803225b4a79454fcb9fc8664fc151";
 
     public static URL generateURL(String cityID) {
-        Uri builtUri = Uri.parse(BASE_URL)
-                .buildUpon()
-                .appendQueryParameter(CITY_ID_PARAM, cityID)
-                .appendQueryParameter("units", "metric")
-                .appendQueryParameter(APPID, TOKEN)
-                .build();
-
         URL url = null;
+        String urlStr = String.format(
+                "http://api.openweathermap.org/data/2.5/weather?id=%sunits=metric&appid=148803225b4a79454fcb9fc8664fc151", cityID);
         try {
-            url = new URL(builtUri.toString());
+            url = new URL("http://api.openweathermap.org/data/2.5/weather?id=2643743&units=metric&appid=148803225b4a79454fcb9fc8664fc151");
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-
         return url;
     }
 

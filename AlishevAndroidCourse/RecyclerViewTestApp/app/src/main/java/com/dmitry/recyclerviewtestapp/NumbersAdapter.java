@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,9 +14,12 @@ public class NumbersAdapter extends RecyclerView.Adapter<NumbersAdapter.NumberVi
     private int numberItems;
     private static int viewHolderCount;
 
-    public NumbersAdapter(int numberItems) {
+    private Context parent;
+
+    public NumbersAdapter(int numberItems, Context parent) {
         this.numberItems = numberItems;
         viewHolderCount = 0;
+        this.parent = parent;
     }
 
     @NonNull
@@ -51,11 +55,24 @@ public class NumbersAdapter extends RecyclerView.Adapter<NumbersAdapter.NumberVi
         TextView listItemNumberView;
         TextView viewHolderIndex;
 
-        public NumberViewHolder(@NonNull View itemView) {
+        public NumberViewHolder(@NonNull final View itemView) {
             super(itemView);
 
             listItemNumberView = itemView.findViewById(R.id.tv_number_item);
             viewHolderIndex = itemView.findViewById(R.id.tv_view_holder_number);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //show toast
+                    int positionIndex = getAdapterPosition();
+
+                    Toast toast = Toast.makeText(
+                            parent, "Element " + positionIndex + " was pressed!", Toast.LENGTH_SHORT);
+
+                    toast.show();
+                }
+            });
         }
 
         void bind(int listIndex) {

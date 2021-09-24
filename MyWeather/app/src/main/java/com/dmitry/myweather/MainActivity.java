@@ -18,6 +18,16 @@ public class MainActivity extends AppCompatActivity {
     TextView city;
     TextView temperature;
 
+//    private void showResultView() {
+//        temperature.setVisibility(View.VISIBLE);
+//        error_message.setVisibility(View.INVISIBLE);
+//    }
+//
+//    private void showErrorTextView() {
+//        tv_result.setVisibility(View.INVISIBLE);
+//        error_message.setVisibility(View.VISIBLE);
+//    }
+
     class WeatherTask extends AsyncTask<URL, Void, String> {
 
         @Override
@@ -35,31 +45,34 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String response) {
-            String firstName = null;
-            String lastName = null;
-
+            double temp = 0;
+            double feelsLike = 0;
+            temperature.setText(response);
+            temperature.append(" !");
             if (response != null && !response.equals("")) {
+
                 try {
                     JSONObject object = new JSONObject(response);
-                    JSONArray array = object.getJSONArray("response");
+                    JSONArray array = object.getJSONArray("main");
                     String resultString = "";
-                    for (int i = 0; i < array.length(); i++) {
-                        JSONObject userInfo = array.getJSONObject(i);
 
-                        firstName = userInfo.getString("first_name");
-                        lastName = userInfo.getString("last_name");
-                        resultString += "Имя: " + firstName + "\nФамилия: " + lastName +"\n\n";
-                    }
-                    tv_result.setText(resultString);
+                    JSONObject weatherInfo = array.getJSONObject(0);
+
+                    temp = weatherInfo.getDouble("temp");
+                    feelsLike = weatherInfo.getDouble("feels_like");
+                    resultString = "Температура: " + temp + "\nОщущается как: " + feelsLike + "\n\n";
+
+                    temperature.setText(resultString);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
-                showResultView();
-            } else
-                showErrorTextView();
+                //showResultView();
+            }
+//            else
+//                showErrorTextView();
 
-            loading_indicator.setVisibility(View.INVISIBLE);
+//            loading_indicator.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -72,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
         temperature = findViewById(R.id.temperature);
 
         city.setText("Нижний Новгород");
-        JSONObject object = GetWeather.getJSON(this, "520555");
+        new WeatherTask().execute(GetWeather.generateURL("2643743"));
 
     }
 }
