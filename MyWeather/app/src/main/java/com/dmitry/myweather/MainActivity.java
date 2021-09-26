@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -13,9 +14,10 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
-    TextView city;
+    EditText city;
     TextView temperature;
 
 //    private void showResultView() {
@@ -31,6 +33,11 @@ public class MainActivity extends AppCompatActivity {
     class WeatherTask extends AsyncTask<URL, Void, String> {
 
         @Override
+        protected void onPreExecute() {
+            temperature.setText("Ожидаем получение данных от сервера...");
+        }
+
+        @Override
         protected String doInBackground(URL... urls) {
             String response = null;
 
@@ -39,40 +46,44 @@ public class MainActivity extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
             return response;
         }
 
         @Override
         protected void onPostExecute(String response) {
-            double temp = 0;
-            double feelsLike = 0;
-            temperature.setText(response);
-            temperature.append(" !");
-            if (response != null && !response.equals("")) {
+            double temp;
+            double feelsLike;
 
+            if (response != null && !response.equals("")) {
+                temperature.setText(response);
                 try {
                     JSONObject object = new JSONObject(response);
-                    JSONArray array = object.getJSONArray("main");
-                    String resultString = "";
 
-                    JSONObject weatherInfo = array.getJSONObject(0);
+                    JSONObject main = object.getJSONObject("main");
+                    temp = main.getDouble("temp");
+                    feelsLike = main.getDouble("feels_like");
 
-                    temp = weatherInfo.getDouble("temp");
-                    feelsLike = weatherInfo.getDouble("feels_like");
-                    resultString = "Температура: " + temp + "\nОщущается как: " + feelsLike + "\n\n";
+                    JSONObject wind = object.getJSONObject("wind");
+                    double windSpeed = wind.getDouble("speed");
+
+                    JSONArray weatherArr = object.getJSONArray("weather");
+                    String cloudInfo = weatherArr.getJSONObject(0).getString("description");
+
+                    String tempInfo = String.format(Locale.ROOT,
+                            "\nТемпература: %.1f с\nОщущается как: %.1f с\n", temp, feelsLike);
+
+                    String windInfo = String.format(Locale.ROOT,
+                            "Скорость ветра: %.1f м/с", windSpeed);
+
+
+                    String resultString = cloudInfo + tempInfo + windInfo;
+
 
                     temperature.setText(resultString);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
-                //showResultView();
             }
-//            else
-//                showErrorTextView();
-
-//            loading_indicator.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -83,9 +94,10 @@ public class MainActivity extends AppCompatActivity {
 
         city = findViewById(R.id.city);
         temperature = findViewById(R.id.temperature);
+    }
 
-        city.setText("Нижний Новгород");
-        new WeatherTask().execute(GetWeather.generateURL("2643743"));
-
+    public void goSearch(View view) {
+        new WeatherTask().execute(GetWeather.generateURL(city.getText().toString()));
+        temperature.setVisibility(View.VISIBLE);
     }
 }

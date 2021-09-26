@@ -64,7 +64,6 @@ public class NumbersAdapter extends RecyclerView.Adapter<NumbersAdapter.NumberVi
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    //show toast
                     int positionIndex = getAdapterPosition();
 
                     Toast toast = Toast.makeText(

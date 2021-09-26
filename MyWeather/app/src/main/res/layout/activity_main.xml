@@ -16,7 +16,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
+        <EditText
             android:id="@+id/city"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -24,8 +24,15 @@
             android:layout_marginTop="24dp"
             android:layout_marginRight="8dp"
             android:gravity="center"
-            android:text="@string/city"
+            android:hint="@string/city"
             android:textSize="24sp" />
+
+        <Button
+            android:id="@+id/btn_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="goSearch"
+            android:text="@string/btnSearch" />
 
         <TextView
             android:id="@+id/temperature"
@@ -34,9 +41,10 @@
             android:layout_marginLeft="8dp"
             android:layout_marginTop="16dp"
             android:layout_marginRight="8dp"
-            android:gravity="center"
+            android:gravity="start"
             android:text="@string/temperature"
-            android:textSize="24sp" />
+            android:textSize="24sp"
+            android:visibility="invisible" />
     </LinearLayout>
 
 

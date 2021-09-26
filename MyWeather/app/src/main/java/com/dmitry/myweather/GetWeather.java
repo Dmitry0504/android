@@ -26,9 +26,9 @@ public class GetWeather {
     public static URL generateURL(String cityID) {
         URL url = null;
         String urlStr = String.format(
-                "http://api.openweathermap.org/data/2.5/weather?id=%sunits=metric&appid=148803225b4a79454fcb9fc8664fc151", cityID);
+                "https://api.openweathermap.org/data/2.5/weather?q=%s&appid=148803225b4a79454fcb9fc8664fc151&units=metric&lang=ru", cityID);
         try {
-            url = new URL("http://api.openweathermap.org/data/2.5/weather?id=2643743&units=metric&appid=148803225b4a79454fcb9fc8664fc151");
+            url = new URL(urlStr);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -37,19 +37,19 @@ public class GetWeather {
 
     public static String getResponseFromURL(URL url) throws IOException {
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+        urlConnection.connect();
+        try (InputStream inputStream = urlConnection.getInputStream();
+             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
 
-        try {
-            InputStream inputStream = urlConnection.getInputStream();
+            String str;
+            StringBuilder builder = new StringBuilder();
 
-            Scanner scanner = new Scanner(inputStream);
-            scanner.useDelimiter("\\A");
+            while ((str = reader.readLine()) != null) {
+                builder.append(str);
+            }
 
-            boolean hasInput = scanner.hasNext();
+            return builder.toString();
 
-            if(hasInput)
-                return scanner.next();
-            else
-                return null;
         } catch (UnknownHostException e) {
             return null;
         }

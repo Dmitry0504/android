@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Погода</string>
-    <string name="city">city</string>
+    <string name="city">Введите название города</string>
+    <string name="btnSearch">Узнать</string>
     <string name="temperature">temperature</string>
     <string name="open_weather_maps_app_id">148803225b4a79454fcb9fc8664fc151</string>
 </resources>
