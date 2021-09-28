@@ -3,4 +3,7 @@
     <string name="write_here">Write here</string>
     <string name="send">Send</string>
     <string name="default_text">Default text</string>
+    <string name="send_message">Send message</string>
+    <string name="search_in_browser">Search in browser</string>
+    <string name="open_map">Open map</string>
 </resources>
