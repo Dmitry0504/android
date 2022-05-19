@@ -2,13 +2,15 @@ package com.example.calculator;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
-    private TextView textView;
+    private TextView resultBotTV;
+    private TextView resultTopTV;
     private Button AC;
     private Button sign;
     private Button divide;
@@ -29,7 +31,8 @@ public class MainActivity extends AppCompatActivity {
     private Button point;
     private Button sqrt;
 
-    private MathFunction mathFunction = new MathFunction();
+    private MediaPlayer mp;
+    private final MathFunction mathFunction = new MathFunction();
     private double firstNumber;
     private double secondNumber;
     private String operation;
@@ -39,7 +42,156 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        textView = findViewById(R.id.textView);
+        initElements();
+        setOnClickListeners();
+    }
+
+    private void setBotText(String text) {
+        resultBotTV.setText(text);
+    }
+
+    private void setTopText(String text) {
+        resultTopTV.setText(text);
+    }
+
+    private void appendText(String text) {
+        String temp = (String) resultBotTV.getText();
+        temp += text;
+        setBotText(temp);
+    }
+
+    private View.OnClickListener mySetOnClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mp.start();
+                switch (view.getId()) {
+                    case R.id.one:
+                        if (!resultBotTV.getText().equals("0"))
+                            appendText("1");
+                        else
+                            setBotText("1");
+                        break;
+                    case R.id.two:
+                        if (!resultBotTV.getText().equals("0"))
+                            appendText("2");
+                        else
+                            setBotText("2");
+                        break;
+                    case R.id.three:
+                        if (!resultBotTV.getText().equals("0"))
+                            appendText("3");
+                        else
+                            setBotText("3");
+                        break;
+                    case R.id.four:
+                        if (!resultBotTV.getText().equals("0"))
+                            appendText("4");
+                        else
+                            setBotText("4");
+                        break;
+                    case R.id.five:
+                        if (!resultBotTV.getText().equals("0"))
+                            appendText("5");
+                        else
+                            setBotText("5");
+                        break;
+                    case R.id.six:
+                        if (!resultBotTV.getText().equals("0"))
+                            appendText("6");
+                        else
+                            setBotText("6");
+                        break;
+                    case R.id.seven:
+                        if (!resultBotTV.getText().equals("0"))
+                            appendText("7");
+                        else
+                            setBotText("7");
+                        break;
+                    case R.id.eight:
+                        if (!resultBotTV.getText().equals("0"))
+                            appendText("8");
+                        else
+                            setBotText("8");
+                        break;
+                    case R.id.nine:
+                        if (!resultBotTV.getText().equals("0"))
+                            appendText("9");
+                        else
+                            setBotText("9");
+                        break;
+                    case R.id.zero:
+                        if (!resultBotTV.getText().equals("0"))
+                            appendText("0");
+                        break;
+                    case R.id.AC:
+                        setBotText("0");
+                        firstNumber = 0;
+                        secondNumber = 0;
+                        break;
+                    case R.id.sign:
+                        if (resultBotTV.getText().charAt(0) == '-')
+                            setBotText((String) resultBotTV.getText().subSequence(1, resultBotTV.getText().length()));
+                        else if (!resultBotTV.getText().equals("0") )
+                            setBotText("-" + resultBotTV.getText());
+                        break;
+                    case R.id.divide:
+                        firstNumber = Double.parseDouble((String) resultBotTV.getText());
+                        operation = "/";
+                        setBotText("0");
+                        break;
+                    case R.id.multiply:
+                        firstNumber = Double.parseDouble((String) resultBotTV.getText());
+                        operation = "*";
+                        setBotText("0");
+                        break;
+                    case R.id.minus:
+                        firstNumber = Double.parseDouble((String) resultBotTV.getText());
+                        operation = "-";
+                        setBotText("0");
+                        break;
+                    case R.id.plus:
+                        firstNumber = Double.parseDouble((String) resultBotTV.getText());
+                        operation = "+";
+                        setBotText("0");
+                        break;
+                    case R.id.sqrt:
+                        firstNumber = Double.parseDouble((String) resultBotTV.getText());
+                        firstNumber = mathFunction.sqrt(firstNumber);
+                        setBotText(String.valueOf(firstNumber));
+                        break;
+                    case R.id.point:
+                        if (resultBotTV.getText().charAt(resultBotTV.length() - 1) != '.')
+                            appendText(".");
+                        break;
+                    case R.id.equals:
+                        secondNumber = Double.parseDouble((String) resultBotTV.getText());
+                        double result = 0;
+                        switch (operation) {
+                            case "+":
+                                result = mathFunction.sum(firstNumber, secondNumber);
+                                break;
+                            case "-":
+                                result = mathFunction.minus(firstNumber, secondNumber);
+                                break;
+                            case "*":
+                                result = mathFunction.multiply(firstNumber, secondNumber);
+                                break;
+                            case "/":
+                                result = mathFunction.divide(firstNumber, secondNumber);
+                                break;
+                        }
+                        setBotText(String.valueOf(result));
+                        setTopText(String.valueOf(result));
+                        break;
+                }
+            }
+        };
+    }
+
+    private void initElements() {
+        resultBotTV = findViewById(R.id.resultBotTV);
+        resultTopTV = findViewById(R.id.resultTopTV);
         AC = findViewById(R.id.AC);
         sign = findViewById(R.id.sign);
         divide = findViewById(R.id.divide);
@@ -59,269 +211,29 @@ public class MainActivity extends AppCompatActivity {
         zero = findViewById(R.id.zero);
         point = findViewById(R.id.point);
         sqrt = findViewById(R.id.sqrt);
-
-        AC.setOnClickListener(oclAC());
-        sign.setOnClickListener(oclSign());
-        divide.setOnClickListener(oclDivide());
-        multiply.setOnClickListener(oclMultiply());
-        seven.setOnClickListener(oclSeven());
-        eight.setOnClickListener(oclEight());
-        nine.setOnClickListener(oclNine());
-        minus.setOnClickListener(oclMinus());
-        four.setOnClickListener(oclFour());
-        five.setOnClickListener(oclFive());
-        six.setOnClickListener(oclSix());
-        plus.setOnClickListener(oclPlus());
-        one.setOnClickListener(oclOne());
-        two.setOnClickListener(oclTwo());
-        three.setOnClickListener(oclThree());
-        equals.setOnClickListener(oclEquals());
-        zero.setOnClickListener(oclZero());
-        sqrt.setOnClickListener(oclSqrt());
-        point.setOnClickListener(oclPoint());
-
+        mp = MediaPlayer.create(this, R.raw.beep_sound);
     }
 
-    private void setText(String text) {
-        textView.setText(text);
+    private void setOnClickListeners() {
+        AC.setOnClickListener(mySetOnClickListener());
+        sign.setOnClickListener(mySetOnClickListener());
+        divide.setOnClickListener(mySetOnClickListener());
+        multiply.setOnClickListener(mySetOnClickListener());
+        seven.setOnClickListener(mySetOnClickListener());
+        eight.setOnClickListener(mySetOnClickListener());
+        nine.setOnClickListener(mySetOnClickListener());
+        minus.setOnClickListener(mySetOnClickListener());
+        four.setOnClickListener(mySetOnClickListener());
+        five.setOnClickListener(mySetOnClickListener());
+        six.setOnClickListener(mySetOnClickListener());
+        plus.setOnClickListener(mySetOnClickListener());
+        one.setOnClickListener(mySetOnClickListener());
+        two.setOnClickListener(mySetOnClickListener());
+        three.setOnClickListener(mySetOnClickListener());
+        equals.setOnClickListener(mySetOnClickListener());
+        zero.setOnClickListener(mySetOnClickListener());
+        sqrt.setOnClickListener(mySetOnClickListener());
+        point.setOnClickListener(mySetOnClickListener());
     }
-
-    private void appendText(String text) {
-        String temp = (String) textView.getText();
-        temp += text;
-        setText(temp);
-    }
-
-    private View.OnClickListener oclOne() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!textView.getText().equals("0"))
-                    appendText("1");
-                else
-                    setText("1");
-            }
-        };
-    }
-
-    private View.OnClickListener oclTwo() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!textView.getText().equals("0"))
-                    appendText("2");
-                else
-                    setText("2");
-            }
-        };
-    }
-
-    private View.OnClickListener oclThree() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!textView.getText().equals("0"))
-                    appendText("3");
-                else
-                    setText("3");
-            }
-        };
-    }
-
-    private View.OnClickListener oclFour() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!textView.getText().equals("0"))
-                    appendText("4");
-                else
-                    setText("4");
-            }
-        };
-    }
-
-    private View.OnClickListener oclFive() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!textView.getText().equals("0"))
-                    appendText("5");
-                else
-                    setText("5");
-            }
-        };
-    }
-
-    private View.OnClickListener oclSix() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!textView.getText().equals("0"))
-                    appendText("1");
-                else
-                    setText("1");
-            }
-        };
-    }
-
-    private View.OnClickListener oclSeven() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!textView.getText().equals("0"))
-                    appendText("7");
-                else
-                    setText("7");
-            }
-        };
-    }
-
-    private View.OnClickListener oclEight() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!textView.getText().equals("0"))
-                    appendText("8");
-                else
-                    setText("8");
-            }
-        };
-    }
-
-    private View.OnClickListener oclNine() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!textView.getText().equals("0"))
-                    appendText("9");
-                else
-                    setText("9");
-            }
-        };
-    }
-
-    private View.OnClickListener oclZero() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!textView.getText().equals("0"))
-                    appendText("0");
-            }
-        };
-    }
-
-    private View.OnClickListener oclAC() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setText("0");
-                firstNumber = 0;
-                secondNumber = 0;
-            }
-        };
-    }
-
-    private View.OnClickListener oclSign() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (textView.getText().charAt(0) == '-')
-                    setText((String) textView.getText().subSequence(1, textView.getText().length()));
-                else if (!textView.getText().equals("0") )
-                    setText("-" + textView.getText());
-            }
-        };
-    }
-
-    private View.OnClickListener oclDivide() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                firstNumber = Double.parseDouble((String) textView.getText());
-                operation = "/";
-                setText("0");
-            }
-        };
-    }
-
-    private View.OnClickListener oclMultiply() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                firstNumber = Double.parseDouble((String) textView.getText());
-                operation = "*";
-                setText("0");
-            }
-        };
-    }
-
-    private View.OnClickListener oclMinus() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                firstNumber = Double.parseDouble((String) textView.getText());
-                operation = "-";
-                setText("0");
-            }
-        };
-    }
-
-    private View.OnClickListener oclPlus() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                firstNumber = Double.parseDouble((String) textView.getText());
-                operation = "+";
-                setText("0");
-            }
-        };
-    }
-
-    private View.OnClickListener oclSqrt() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                firstNumber = Double.parseDouble((String) textView.getText());
-                firstNumber = mathFunction.sqrt(firstNumber);
-                setText(String.valueOf(firstNumber));
-            }
-        };
-    }
-
-    private View.OnClickListener oclPoint() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (textView.getText().charAt(textView.length() - 1) != '.')
-                appendText(".");
-            }
-        };
-    }
-
-    private View.OnClickListener oclEquals() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                secondNumber = Double.parseDouble((String) textView.getText());
-                double result = 0;
-                switch (operation) {
-                    case "+":
-                        result = mathFunction.sum(firstNumber, secondNumber);
-                        break;
-                    case "-":
-                        result = mathFunction.minus(firstNumber, secondNumber);
-                        break;
-                    case "*":
-                        result = mathFunction.multiply(firstNumber, secondNumber);
-                        break;
-                    case "/":
-                        result = mathFunction.divide(firstNumber, secondNumber);
-                        break;
-                }
-                setText(String.valueOf(result));
-            }
-        };
-    }
-
 
 }

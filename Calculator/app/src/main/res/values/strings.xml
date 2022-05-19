@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Мой калькулятор</string>
     <string name="_0">0</string>
+    <string name="result">= 0</string>
     <string name="ac">AC</string>
     <string name="sign">+/-</string>
     <string name="divide">/</string>
