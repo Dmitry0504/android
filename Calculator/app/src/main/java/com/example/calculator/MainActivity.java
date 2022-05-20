@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     private TextView resultBotTV;
@@ -51,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setTopText(String text) {
-        resultTopTV.setText(text);
+        resultTopTV.setText("= " + text);
     }
 
     private void appendText(String text) {
@@ -157,6 +158,11 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.sqrt:
                         firstNumber = Double.parseDouble((String) resultBotTV.getText());
+                        if (firstNumber < 0) {
+                            Toast.makeText(getApplicationContext(),
+                                    "Нельзя взять квадратный корень из отрицательного числа!", Toast.LENGTH_SHORT).show();
+                            break;
+                        }
                         firstNumber = mathFunction.sqrt(firstNumber);
                         setBotText(String.valueOf(firstNumber));
                         break;
@@ -166,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.equals:
                         secondNumber = Double.parseDouble((String) resultBotTV.getText());
-                        double result = 0;
+                        Double result = 0.0;
                         switch (operation) {
                             case "+":
                                 result = mathFunction.sum(firstNumber, secondNumber);
@@ -179,6 +185,10 @@ public class MainActivity extends AppCompatActivity {
                                 break;
                             case "/":
                                 result = mathFunction.divide(firstNumber, secondNumber);
+                                if (result == null) {
+                                    Toast.makeText(getApplicationContext(), "На ноль делить нельзя!", Toast.LENGTH_SHORT).show();
+                                    result = 0.0;
+                                }
                                 break;
                         }
                         setBotText(String.valueOf(result));

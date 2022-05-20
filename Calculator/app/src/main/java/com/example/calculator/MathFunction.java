@@ -10,9 +10,9 @@ public class MathFunction {
         return a - b;
     }
 
-    public double divide(double a, double b) {
+    public Double divide(double a, double b) {
         if (b == 0)
-            return 0;
+            return null;
         return a / b;
     }
 
